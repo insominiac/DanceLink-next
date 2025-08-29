@@ -1,0 +1,13 @@
+[phases.setup]
+nixpkgs = ["nodejs_18", "npm"]
+
+[phases.build]
+cmd = "npm install --production --no-audit --no-fund --no-optional"
+
+[phases.start]
+cmd = "npm start"
+
+[variables]
+NODE_ENV = "production"
+NPM_CONFIG_CACHE = "/tmp/.npm"
+NPM_CONFIG_UPDATE_NOTIFIER = "false"
