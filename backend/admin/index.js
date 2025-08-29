@@ -157,6 +157,15 @@ adminApp.post('/api/auth/logout', (req, res) => {
   res.json({ success: true });
 });
 
+// Health check endpoint for Railway
+adminApp.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    service: 'Dance Website Admin Panel'
+  });
+});
+
 // Admin dashboard - main entry point
 adminApp.get('/', requireAdmin, async (req, res) => {
   try {
@@ -383,7 +392,7 @@ module.exports = {
 
 // Start server if running directly
 if (require.main === module) {
-  const PORT = process.env.ADMIN_PORT || 3001;
+  const PORT = process.env.PORT || process.env.ADMIN_PORT || 3001;
   adminApp.listen(PORT, () => {
     console.log(`🚀 Admin panel running on port ${PORT}`);
     console.log(`📊 Dashboard: http://localhost:${PORT}`);
