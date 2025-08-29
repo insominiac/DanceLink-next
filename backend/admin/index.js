@@ -215,12 +215,11 @@ async function getDashboardStats() {
       pool.query(`
         SELECT 
           COUNT(*) as total_users,
-          COUNT(*) FILTER (WHERE role = 'user') as regular_users,
-          COUNT(*) FILTER (WHERE role = 'instructor') as instructors,
-          COUNT(*) FILTER (WHERE role = 'admin') as admins,
+          COUNT(*) FILTER (WHERE user_role = 'user') as regular_users,
+          COUNT(*) FILTER (WHERE user_role = 'teacher') as instructors,
+          COUNT(*) FILTER (WHERE user_role = 'admin') as admins,
           COUNT(*) FILTER (WHERE created_at >= CURRENT_DATE - INTERVAL '30 days') as new_users_30d
         FROM users
-        WHERE users.id NOT IN (SELECT user_id FROM users WHERE role = 'admin')
       `),
 
       // Booking statistics
