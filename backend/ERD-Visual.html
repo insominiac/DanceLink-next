@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dance Website ERD</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        
+        ul, ol {
+            margin: 10px 0 10px 20px;
+        }
+        
+        li {
+            margin: 5px 0;
+        }
+        
+        @media print {
+            body {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+            
+            pre {
+                font-size: 10px;
+                page-break-inside: avoid;
+            }
+            
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+<h1 id="dance-website-visual-erd-mermaid">Dance Website - Visual ERD (Mermaid)</h1>
+<h2 id="entity-relationship-diagram">Entity Relationship Diagram</h2>
+<pre class="codehilite"><code class="language-mermaid">erDiagram
+    USERS {
+        bigint id PK
+        varchar email UK
+        varchar password_hash
+        varchar full_name
+        varchar phone
+        varchar dance_style
+        varchar skill_level
+        text bio
+        varchar profile_image
+        boolean is_verified
+        json preferences
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ADMINS {
+        bigint id PK
+        varchar email UK
+        varchar password_hash
+        varchar username UK
+        varchar role
+        timestamp created_at
+        timestamp updated_at
+        timestamp last_login
+        boolean is_active
+    }
+
+    INSTRUCTORS {
+        bigint id PK
+        varchar name
+        varchar specialty
+        text bio
+        varchar image_url
+        varchar experience
+        json social_links
+        decimal rating
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    CLASSES {
+        bigint id PK
+        varchar title
+        text description
+        varchar level
+        varchar dance_style
+        int duration
+        int max_capacity
+        decimal price
+        json schedule_days
+        time schedule_time
+        text requirements
+        varchar image_url
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    EVENTS {
+        bigint id PK
+        varchar title
+        text description
+        varchar event_type
+        date start_date
+        date end_date
+        time start_time
+        time end_time
+        varchar location
+        text address
+        decimal price
+        int max_attendees
+        int current_attendees
+        varchar image_url
+        varchar organizer
+        json tags
+        decimal rating
+        varchar status
+        boolean is_featured
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    CLASS_INSTRUCTORS {
+        bigint id PK
+        bigint class_id FK
+        bigint instructor_id FK
+        boolean is_primary
+        timestamp created_at
+    }
+
+    CLASS_BOOKINGS {
+        bigint id PK
+        bigint user_id FK
+        bigint class_id FK
+        timestamp booking_date
+        varchar status
+        varchar payment_status
+        decimal amount_paid
+        varchar payment_method
+        text notes
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    EVENT_BOOKINGS {
+        bigint id PK
+        bigint user_id FK
+        bigint event_id FK
+        timestamp booking_date
+        varchar status
+        varchar payment_status
+        decimal amount_paid
+        varchar payment_method
+        text notes
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    CONTACT_MESSAGES {
+        bigint id PK
+        varchar name
+        varchar email
+        varchar phone
+        text message
+        varchar subject
+        boolean is_read
+        text admin_response
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PARTNER_REQUESTS {
+        bigint id PK
+        bigint requester_id FK
+        varchar dance_style
+        varchar skill_level
+        varchar location
+        json availability
+        text message
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PARTNER_MATCHES {
+        bigint id PK
+        bigint user1_id FK
+        bigint user2_id FK
+        decimal match_score
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    TESTIMONIALS {
+        bigint id PK
+        bigint user_id FK
+        decimal rating
+        text message
+        boolean is_featured
+        boolean is_approved
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    DANCE_STYLES {
+        bigint id PK
+        varchar name
+        text description
+        varchar image_url
+        varchar difficulty_level
+        int popularity
+        varchar category
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    NEWSLETTERS {
+        bigint id PK
+        varchar email
+        varchar name
+        boolean is_subscribed
+        json preferences
+        timestamp subscribed_at
+        timestamp unsubscribed_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    NOTIFICATIONS {
+        bigint id PK
+        bigint user_id FK
+        varchar type
+        varchar title
+        text message
+        boolean is_read
+        varchar priority
+        varchar action_url
+        timestamp created_at
+    }
+
+    FORUM_POSTS {
+        bigint id PK
+        bigint user_id FK
+        varchar category
+        varchar title
+        text content
+        json tags
+        int views_count
+        int likes_count
+        int replies_count
+        boolean is_pinned
+        boolean is_locked
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    FORUM_REPLIES {
+        bigint id PK
+        bigint post_id FK
+        bigint user_id FK
+        bigint parent_id FK
+        text content
+        int likes_count
+        boolean is_solution
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    AUDIT_LOGS {
+        bigint id PK
+        bigint user_id FK
+        bigint admin_id FK
+        varchar action
+        varchar table_name
+        bigint record_id
+        json old_values
+        json new_values
+        varchar ip_address
+        varchar user_agent
+        timestamp created_at
+    }
+
+    SETTINGS {
+        bigint id PK
+        varchar key
+        text value
+        varchar type
+        text description
+        boolean is_public
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    USER_DASHBOARDS {
+        bigint id PK
+        bigint user_id FK
+        varchar title
+        json layout_config
+        varchar theme
+        boolean is_default
+        varchar visibility
+        timestamp last_accessed
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    DASHBOARD_WIDGETS {
+        bigint id PK
+        bigint dashboard_id FK
+        varchar widget_type
+        int position_x
+        int position_y
+        int width
+        int height
+        json settings
+        varchar title
+        boolean is_visible
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    USER_ANALYTICS {
+        bigint id PK
+        bigint user_id FK
+        int login_count
+        int class_bookings
+        int event_bookings
+        decimal total_spent
+        int forum_posts
+        int forum_replies
+        int partner_requests
+        decimal avg_class_rating
+        timestamp last_login
+        int streak_days
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    USER_GOALS {
+        bigint id PK
+        bigint user_id FK
+        varchar title
+        text description
+        varchar goal_type
+        int target_value
+        int current_value
+        date start_date
+        date end_date
+        varchar priority
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    USER_ACTIVITY_LOG {
+        bigint id PK
+        bigint user_id FK
+        varchar activity_type
+        varchar entity_type
+        bigint entity_id
+        varchar action
+        json details
+        varchar ip_address
+        varchar user_agent
+        timestamp created_at
+    }
+
+    DASHBOARD_LAYOUTS {
+        bigint id PK
+        varchar name
+        text description
+        json template
+        int columns
+        boolean is_default
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    %% Relationships
+    USERS ||--o{ CLASS_BOOKINGS : books
+    USERS ||--o{ EVENT_BOOKINGS : books
+    USERS ||--o{ PARTNER_REQUESTS : creates
+    USERS ||--o{ TESTIMONIALS : writes
+    USERS ||--o{ NOTIFICATIONS : receives
+    USERS ||--o{ FORUM_POSTS : creates
+    USERS ||--o{ FORUM_REPLIES : writes
+    USERS ||--o{ AUDIT_LOGS : performs
+
+    CLASSES ||--o{ CLASS_BOOKINGS : has
+    CLASSES ||--o{ CLASS_INSTRUCTORS : taught_by
+
+    EVENTS ||--o{ EVENT_BOOKINGS : has
+
+    INSTRUCTORS ||--o{ CLASS_INSTRUCTORS : teaches
+
+    FORUM_POSTS ||--o{ FORUM_REPLIES : has
+    FORUM_REPLIES ||--o{ FORUM_REPLIES : nested_in
+
+    ADMINS ||--o{ AUDIT_LOGS : performs
+
+    USERS ||--o{ PARTNER_MATCHES : user1
+    USERS ||--o{ PARTNER_MATCHES : user2
+
+    USERS ||--o{ USER_DASHBOARDS : owns
+    USERS ||--|| USER_ANALYTICS : has
+    USERS ||--o{ USER_GOALS : sets
+    USERS ||--o{ USER_ACTIVITY_LOG : performs
+
+    USER_DASHBOARDS ||--o{ DASHBOARD_WIDGETS : contains
+</code></pre>
+
+<h2 id="database-schema-overview">Database Schema Overview</h2>
+<h3 id="core-business-entities">Core Business Entities</h3>
+<ol>
+<li><strong>Users &amp; Authentication</strong></li>
+<li><code>USERS</code> - Regular website users</li>
+<li>
+<p><code>ADMINS</code> - Administrative users with elevated permissions</p>
+</li>
+<li>
+<p><strong>Content Management</strong></p>
+</li>
+<li><code>INSTRUCTORS</code> - Dance instructors</li>
+<li><code>CLASSES</code> - Regular dance classes</li>
+<li><code>EVENTS</code> - Special events and workshops</li>
+<li>
+<p><code>DANCE_STYLES</code> - Available dance styles</p>
+</li>
+<li>
+<p><strong>Booking System</strong></p>
+</li>
+<li><code>CLASS_BOOKINGS</code> - Class registrations</li>
+<li>
+<p><code>EVENT_BOOKINGS</code> - Event registrations</p>
+</li>
+<li>
+<p><strong>Partner Matching</strong></p>
+</li>
+<li><code>PARTNER_REQUESTS</code> - User requests for dance partners</li>
+<li>
+<p><code>PARTNER_MATCHES</code> - AI-generated partner matches</p>
+</li>
+<li>
+<p><strong>Community Features</strong></p>
+</li>
+<li><code>FORUM_POSTS</code> - Community discussion posts</li>
+<li><code>FORUM_REPLIES</code> - Threaded replies to posts</li>
+<li>
+<p><code>TESTIMONIALS</code> - User reviews and testimonials</p>
+</li>
+<li>
+<p><strong>Communication</strong></p>
+</li>
+<li><code>CONTACT_MESSAGES</code> - Contact form submissions</li>
+<li><code>NEWSLETTERS</code> - Newsletter subscriptions</li>
+<li>
+<p><code>NOTIFICATIONS</code> - User notifications</p>
+</li>
+<li>
+<p><strong>System Management</strong></p>
+</li>
+<li><code>AUDIT_LOGS</code> - System audit trail</li>
+<li><code>SETTINGS</code> - Application settings</li>
+</ol>
+<h3 id="key-features-supported">Key Features Supported</h3>
+<h4 id="1-user-management">1. User Management</h4>
+<ul>
+<li>User registration and authentication</li>
+<li>Profile management with dance preferences</li>
+<li>Role-based access control</li>
+</ul>
+<h4 id="2-class-event-management">2. Class &amp; Event Management</h4>
+<ul>
+<li>Instructors can be assigned to multiple classes</li>
+<li>Booking system with capacity management</li>
+<li>Payment tracking and status management</li>
+</ul>
+<h4 id="3-partner-matching-system">3. Partner Matching System</h4>
+<ul>
+<li>Users can request dance partners</li>
+<li>AI-powered matching based on preferences</li>
+<li>Match scoring and status tracking</li>
+</ul>
+<h4 id="4-community-platform">4. Community Platform</h4>
+<ul>
+<li>Threaded forum discussions</li>
+<li>User testimonials and reviews</li>
+<li>Notification system</li>
+</ul>
+<h4 id="5-admin-dashboard">5. Admin Dashboard</h4>
+<ul>
+<li>Complete CRUD operations on all entities</li>
+<li>Audit logging for compliance</li>
+<li>Contact message management</li>
+<li>User and booking analytics</li>
+</ul>
+<h3 id="indexing-strategy">Indexing Strategy</h3>
+<ul>
+<li>Primary keys on all tables</li>
+<li>Foreign key indexes for joins</li>
+<li>Email indexes for authentication</li>
+<li>Search indexes on text fields</li>
+<li>Composite indexes for common queries</li>
+</ul>
+<p>This ERD provides a comprehensive foundation for the dance website's backend system with admin panel capabilities.</p>
+</body>
+</html>

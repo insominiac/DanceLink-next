@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dance Website ERD</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        
+        ul, ol {
+            margin: 10px 0 10px 20px;
+        }
+        
+        li {
+            margin: 5px 0;
+        }
+        
+        @media print {
+            body {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+            
+            pre {
+                font-size: 10px;
+                page-break-inside: avoid;
+            }
+            
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+<h1 id="dancelink-entity-relationship-diagram-erd">DanceLink - Entity Relationship Diagram (ERD)</h1>
+<h2 id="database-schema-design">Database Schema Design</h2>
+<h3 id="core-entities-and-relationships">Core Entities and Relationships</h3>
+<pre class="codehilite"><code>┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
+│      USERS      │       │     ADMINS      │       │   INSTRUCTORS   │
+├─────────────────┤       ├─────────────────┤       ├─────────────────┤
+│ id (PK)         │       │ id (PK)         │       │ id (PK)         │
+│ email (UNIQUE)  │       │ email (UNIQUE)  │       │ name            │
+│ password_hash   │       │ password_hash   │       │ specialty       │
+│ full_name       │       │ username        │       │ bio             │
+│ phone           │       │ role            │       │ image_url       │
+│ dance_style     │       │ created_at      │       │ experience      │
+│ skill_level     │       │ updated_at      │       │ social_links    │
+│ bio             │       │ last_login      │       │ rating          │
+│ profile_image   │       │ is_active       │       │ is_active       │
+│ is_verified     │       └─────────────────┘       │ created_at      │
+│ preferences     │                                 │ updated_at      │
+│ created_at      │                                 └─────────────────┘
+│ updated_at      │                                          │
+└─────────────────┘                                          │
+         │                                                   │
+         │                                                   │
+         │                                                   │
+┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
+│     CLASSES     │       │     EVENTS      │       │ CLASS_INSTRUCTORS│
+├─────────────────┤       ├─────────────────┤       ├─────────────────┤
+│ id (PK)         │       │ id (PK)         │       │ id (PK)         │
+│ title           │       │ title           │       │ class_id (FK)   │
+│ description     │       │ description     │       │ instructor_id(FK)│
+│ level           │       │ event_type      │       │ is_primary      │
+│ dance_style     │       │ start_date      │       │ created_at      │
+│ duration        │       │ end_date        │       └─────────────────┘
+│ max_capacity    │       │ start_time      │                │
+│ price           │       │ end_time        │                │
+│ schedule_days   │       │ location        │                │
+│ schedule_time   │       │ address         │                │
+│ requirements    │       │ price           │                │
+│ image_url       │       │ max_attendees   │                │
+│ is_active       │       │ current_attendees│               │
+│ created_at      │       │ image_url       │                │
+│ updated_at      │       │ organizer       │                │
+└─────────────────┘       │ tags            │                │
+         │                │ rating          │                │
+         │                │ status          │                │
+         │                │ is_featured     │                │
+         │                │ created_at      │                │
+         │                │ updated_at      │                │
+         │                └─────────────────┘                │
+         │                         │                         │
+         │                         │                         │
+         └─────────────┬───────────┴─────────────────────────┘
+                       │
+┌─────────────────┐    │    ┌─────────────────┐       ┌─────────────────┐
+│ CLASS_BOOKINGS  │    │    │ EVENT_BOOKINGS  │       │ CONTACT_MESSAGES│
+├─────────────────┤    │    ├─────────────────┤       ├─────────────────┤
+│ id (PK)         │    │    │ id (PK)         │       │ id (PK)         │
+│ user_id (FK)    │    │    │ user_id (FK)    │       │ name            │
+│ class_id (FK)   │    │    │ event_id (FK)   │       │ email           │
+│ booking_date    │    │    │ booking_date    │       │ phone           │
+│ status          │    │    │ status          │       │ message         │
+│ payment_status  │    │    │ payment_status  │       │ subject         │
+│ amount_paid     │    │    │ amount_paid     │       │ is_read         │
+│ payment_method  │    │    │ payment_method  │       │ admin_response  │
+│ notes           │    │    │ notes           │       │ created_at      │
+│ created_at      │    │    │ created_at      │       │ updated_at      │
+│ updated_at      │    │    │ updated_at      │       └─────────────────┘
+└─────────────────┘    │    └─────────────────┘
+         │              │             │
+         │              │             │
+         │              │             │
+┌─────────────────┐    │    ┌─────────────────┐       ┌─────────────────┐
+│ PARTNER_REQUESTS│    │    │   TESTIMONIALS  │       │   DANCE_STYLES  │
+├─────────────────┤    │    ├─────────────────┤       ├─────────────────┤
+│ id (PK)         │    │    │ id (PK)         │       │ id (PK)         │
+│ requester_id(FK)│    │    │ user_id (FK)    │       │ name            │
+│ dance_style     │    │    │ rating          │       │ description     │
+│ skill_level     │    │    │ message         │       │ image_url       │
+│ location        │    │    │ is_featured     │       │ difficulty_level│
+│ availability    │    │    │ is_approved     │       │ popularity      │
+│ message         │    │    │ created_at      │       │ category        │
+│ status          │    │    │ updated_at      │       │ is_active       │
+│ created_at      │    │    └─────────────────┘       │ created_at      │
+│ updated_at      │    │                              │ updated_at      │
+└─────────────────┘    │                              └─────────────────┘
+         │              │
+         │              │
+         │              │
+┌─────────────────┐    │    ┌─────────────────┐       ┌─────────────────┐
+│ PARTNER_MATCHES │    │    │   NEWSLETTERS   │       │     SETTINGS    │
+├─────────────────┤    │    ├─────────────────┤       ├─────────────────┤
+│ id (PK)         │    │    │ id (PK)         │       │ id (PK)         │
+│ user1_id (FK)   │    │    │ email           │       │ key             │
+│ user2_id (FK)   │    │    │ name            │       │ value           │
+│ match_score     │    │    │ is_subscribed   │       │ type            │
+│ status          │    │    │ preferences     │       │ description     │
+│ created_at      │    │    │ subscribed_at   │       │ is_public       │
+│ updated_at      │    │    │ unsubscribed_at │       │ created_at      │
+└─────────────────┘    │    │ created_at      │       │ updated_at      │
+                       │    │ updated_at      │       └─────────────────┘
+                       │    └─────────────────┘
+                       │
+                       │
+┌─────────────────┐    │    ┌─────────────────┐       ┌─────────────────┐
+│  FORUM_REPLIES  │    │    │   AUDIT_LOGS    │       │ DASHBOARD_WIDGETS│
+├─────────────────┤    │    ├─────────────────┤       ├─────────────────┤
+│ id (PK)         │    │    │ id (PK)         │       │ id (PK)         │
+│ post_id (FK)    │    │    │ user_id (FK)    │       │ dashboard_id(FK)│
+│ user_id (FK)    │────┘    │ admin_id (FK)   │       │ widget_type     │
+│ parent_id (FK)  │         │ action          │       │ position_x      │
+│ content         │         │ table_name      │       │ position_y      │
+│ likes_count     │         │ record_id       │       │ width           │
+│ is_solution     │         │ old_values      │       │ height          │
+│ created_at      │         │ new_values      │       │ settings        │
+│ updated_at      │         │ ip_address      │       │ title           │
+└─────────────────┘         │ user_agent      │       │ is_visible      │
+                            │ created_at      │       │ created_at      │
+                            └─────────────────┘       │ updated_at      │
+                                                      └─────────────────┘
+
+┌─────────────────┐         ┌─────────────────┐       ┌─────────────────┐
+│  USER_ANALYTICS │         │ USER_GOALS      │       │ USER_ACTIVITY_LOG│
+├─────────────────┤         ├─────────────────┤       ├─────────────────┤
+│ id (PK)         │         │ id (PK)         │       │ id (PK)         │
+│ user_id (FK)    │         │ user_id (FK)    │       │ user_id (FK)    │
+│ login_count     │         │ title           │       │ activity_type   │
+│ class_bookings  │         │ description     │       │ entity_type     │
+│ event_bookings  │         │ goal_type       │       │ entity_id       │
+│ total_spent     │         │ target_value    │       │ action          │
+│ forum_posts     │         │ current_value   │       │ details         │
+│ forum_replies   │         │ start_date      │       │ ip_address      │
+│ partner_requests│         │ end_date        │       │ user_agent      │
+│ avg_class_rating│         │ priority        │       │ created_at      │
+│ last_login      │         │ status          │       └─────────────────┘
+│ created_at      │         │ created_at      │
+│ updated_at      │         │ updated_at      │
+└─────────────────┘         └─────────────────┘
+
+┌─────────────────┐
+│ DASHBOARD_LAYOUTS│
+├─────────────────┤
+│ id (PK)         │
+│ name            │
+│ description     │
+│ template        │
+│ columns         │
+│ is_default      │
+│ is_active       │
+│ created_at      │
+│ updated_at      │
+└─────────────────┘
+│ visibility      │
+│ likes_count     │    │    │ payment_method  │       │ last_accessed   │
+│ replies_count   │    │    │ notes           │       │ created_at      │
+│ is_pinned       │    │    │ created_at      │       │ updated_at      │
+│ is_locked       │    │    │ updated_at      │       └─────────────────┘
+│ created_at      │    │    └─────────────────┘                │
+│ updated_at      │    │             │                         │
+└─────────────────┘    │
+┌─────────────────┐    │
+│   FORUM_POSTS   │    │
+├─────────────────┤    │
+│ id (PK)         │    │
+│ user_id (FK)    │    │
+│ category        │    │
+│ title           │    │
+│ content         │    │
+│ tags            │    │
+│ views_count     │    │
+│ likes_count     │    │
+│ replies_count   │    │
+│ is_pinned       │    │
+│ is_locked       │    │
+│ created_at      │    │
+│ updated_at      │    │
+└─────────────────┘    │
+         │              │
+         │              │
+┌─────────────────┐    │
+│  FORUM_REPLIES  │    │
+├─────────────────┤    │
+│ id (PK)         │    │
+│ post_id (FK)    │    │
+│ user_id (FK)    │────┘
+│ parent_id (FK)  │
+│ content         │
+│ likes_count     │
+│ is_solution     │
+│ created_at      │
+│ updated_at      │
+└─────────────────┘
+</code></pre>
+
+<h2 id="relationships">Relationships</h2>
+<h3 id="one-to-many-relationships">One-to-Many Relationships</h3>
+<ul>
+<li><strong>USERS</strong> → <strong>CLASS_BOOKINGS</strong> (1:N)</li>
+<li><strong>USERS</strong> → <strong>EVENT_BOOKINGS</strong> (1:N)</li>
+<li><strong>USERS</strong> → <strong>PARTNER_REQUESTS</strong> (1:N)</li>
+<li><strong>USERS</strong> → <strong>TESTIMONIALS</strong> (1:N)</li>
+<li><strong>USERS</strong> → <strong>NOTIFICATIONS</strong> (1:N)</li>
+<li><strong>USERS</strong> → <strong>FORUM_POSTS</strong> (1:N)</li>
+<li><strong>USERS</strong> → <strong>FORUM_REPLIES</strong> (1:N)</li>
+<li><strong>USERS</strong> → <strong>AUDIT_LOGS</strong> (1:N)</li>
+<li><strong>USERS</strong> → <strong>USER_DASHBOARDS</strong> (1:N)</li>
+<li><strong>USERS</strong> → <strong>USER_ANALYTICS</strong> (1:1)</li>
+<li><strong>USERS</strong> → <strong>USER_GOALS</strong> (1:N)</li>
+<li><strong>USERS</strong> → <strong>USER_ACTIVITY_LOG</strong> (1:N)</li>
+<li><strong>USER_DASHBOARDS</strong> → <strong>DASHBOARD_WIDGETS</strong> (1:N)</li>
+<li><strong>CLASSES</strong> → <strong>CLASS_BOOKINGS</strong> (1:N)</li>
+<li><strong>EVENTS</strong> → <strong>EVENT_BOOKINGS</strong> (1:N)</li>
+<li><strong>FORUM_POSTS</strong> → <strong>FORUM_REPLIES</strong> (1:N)</li>
+<li><strong>FORUM_REPLIES</strong> → <strong>FORUM_REPLIES</strong> (1:N - self-referencing for nested replies)</li>
+</ul>
+<h3 id="many-to-many-relationships">Many-to-Many Relationships</h3>
+<ul>
+<li><strong>CLASSES</strong> ↔ <strong>INSTRUCTORS</strong> (through CLASS_INSTRUCTORS)</li>
+<li><strong>USERS</strong> ↔ <strong>USERS</strong> (through PARTNER_MATCHES for partner matching)</li>
+<li><strong>USER_DASHBOARDS</strong> ↔ <strong>DASHBOARD_LAYOUTS</strong> (through dashboard_id and layout configuration)</li>
+</ul>
+<h3 id="key-constraints">Key Constraints</h3>
+<h4 id="primary-keys-pk">Primary Keys (PK)</h4>
+<ul>
+<li>All tables have an auto-incrementing <code>id</code> as primary key</li>
+</ul>
+<h4 id="foreign-keys-fk">Foreign Keys (FK)</h4>
+<ul>
+<li><code>user_id</code> references USERS(id)</li>
+<li><code>admin_id</code> references ADMINS(id)</li>
+<li><code>class_id</code> references CLASSES(id)</li>
+<li><code>event_id</code> references EVENTS(id)</li>
+<li><code>instructor_id</code> references INSTRUCTORS(id)</li>
+<li><code>post_id</code> references FORUM_POSTS(id)</li>
+<li><code>parent_id</code> references FORUM_REPLIES(id)</li>
+<li><code>dashboard_id</code> references USER_DASHBOARDS(id)</li>
+</ul>
+<h4 id="unique-constraints">Unique Constraints</h4>
+<ul>
+<li>USERS.email</li>
+<li>ADMINS.email</li>
+<li>ADMINS.username</li>
+</ul>
+<h4 id="indexes-for-performance">Indexes (for performance)</h4>
+<ul>
+<li>email fields (USERS, ADMINS, NEWSLETTERS)</li>
+<li>foreign key fields</li>
+<li>created_at/updated_at timestamps</li>
+<li>status fields</li>
+<li>search fields (name, title, category)</li>
+</ul>
+<h2 id="data-types-and-constraints">Data Types and Constraints</h2>
+<h3 id="common-field-types">Common Field Types</h3>
+<ul>
+<li><strong>id</strong>: BIGINT AUTO_INCREMENT PRIMARY KEY</li>
+<li><strong>email</strong>: VARCHAR(255) UNIQUE NOT NULL</li>
+<li><strong>password_hash</strong>: VARCHAR(255) NOT NULL</li>
+<li><strong>created_at/updated_at</strong>: TIMESTAMP DEFAULT CURRENT_TIMESTAMP</li>
+<li><strong>is_active/is_featured/is_read</strong>: BOOLEAN DEFAULT TRUE/FALSE</li>
+<li><strong>status</strong>: ENUM('active', 'inactive', 'pending', 'cancelled', 'completed')</li>
+<li><strong>rating</strong>: DECIMAL(3,2) DEFAULT 0.00 (0.00 to 5.00)</li>
+<li><strong>price/amount_paid</strong>: DECIMAL(10,2)</li>
+<li><strong>JSON fields</strong>: preferences, social_links, tags (MySQL JSON type)</li>
+</ul>
+<h3 id="business-rules">Business Rules</h3>
+<ol>
+<li>Users can book multiple classes and events</li>
+<li>Instructors can teach multiple classes</li>
+<li>Classes can have multiple instructors (primary and assistant)</li>
+<li>Events have capacity limits</li>
+<li>Partner matching is mutual (both users must agree)</li>
+<li>Forum replies can be nested (threaded discussions)</li>
+<li>Admin actions are logged for audit trail</li>
+<li>Soft deletes for important data (is_active flag)</li>
+<li>Each user can have multiple dashboards but only one default</li>
+<li>Dashboard widgets are configurable and can be resized/repositioned</li>
+<li>User analytics are automatically calculated based on user activity</li>
+<li>User goals track progress toward specific dance achievements</li>
+<li>Activity logs track all user interactions for analytics purposes</li>
+</ol>
+<h3 id="security-considerations">Security Considerations</h3>
+<ul>
+<li>Password hashing (bcrypt)</li>
+<li>JWT tokens for authentication</li>
+<li>Role-based access control (RBAC)</li>
+<li>Input validation and sanitization</li>
+<li>Audit logging for admin actions</li>
+<li>Rate limiting on API endpoints</li>
+</ul>
+</body>
+</html>
