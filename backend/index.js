@@ -166,6 +166,17 @@ adminApp.get('/health', (req, res) => {
   });
 });
 
+// Environment debug endpoint
+adminApp.get('/debug-env', (req, res) => {
+  res.json({
+    DATABASE_URL_present: !!process.env.DATABASE_URL,
+    DATABASE_URL_prefix: process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 20) + '...' : 'NOT_SET',
+    NODE_ENV: process.env.NODE_ENV,
+    JWT_SECRET_present: !!process.env.JWT_SECRET,
+    config_type: process.env.DATABASE_URL ? 'CONNECTION_STRING' : 'INDIVIDUAL_PARAMS'
+  });
+});
+
 // Database connection test endpoint
 adminApp.get('/test-db', async (req, res) => {
   try {
@@ -188,7 +199,9 @@ adminApp.get('/test-db', async (req, res) => {
     res.status(500).json({
       status: 'Database connection failed',
       error: error.message,
-      code: error.code
+      code: error.code,
+      DATABASE_URL_present: !!process.env.DATABASE_URL,
+      config_type: process.env.DATABASE_URL ? 'CONNECTION_STRING' : 'INDIVIDUAL_PARAMS'
     });
   }
 });
