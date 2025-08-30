@@ -166,6 +166,33 @@ adminApp.get('/health', (req, res) => {
   });
 });
 
+// Database connection test endpoint
+adminApp.get('/test-db', async (req, res) => {
+  try {
+    console.log('Testing database connection...');
+    console.log('DATABASE_URL present:', !!process.env.DATABASE_URL);
+    console.log('Database config:', JSON.stringify(dbConfig, null, 2));
+    
+    const result = await pool.query('SELECT NOW() as current_time, COUNT(*) as user_count FROM users');
+    const userCount = await pool.query('SELECT COUNT(*) as count FROM users');
+    
+    res.json({
+      status: 'Database connection successful',
+      timestamp: new Date().toISOString(),
+      database_time: result.rows[0].current_time,
+      user_count: userCount.rows[0].count,
+      config_type: process.env.DATABASE_URL ? 'CONNECTION_STRING' : 'INDIVIDUAL_PARAMS'
+    });
+  } catch (error) {
+    console.error('Database connection test failed:', error);
+    res.status(500).json({
+      status: 'Database connection failed',
+      error: error.message,
+      code: error.code
+    });
+  }
+});
+
 // Admin dashboard - main entry point
 adminApp.get('/', requireAdmin, async (req, res) => {
   try {
