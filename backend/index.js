@@ -417,6 +417,10 @@ module.exports = {
   formatDate
 };
 
+// Default export for Vercel
+module.exports.default = adminApp;
+module.exports = adminApp;
+
 // Start server if running directly
 if (require.main === module) {
   const PORT = process.env.PORT || process.env.ADMIN_PORT || 3001;
